@@ -1,0 +1,51 @@
+
+                                    - {JOB_ID}_Group:
+                                       steps:
+                                          - {JOB_ID}:
+                                              call: http.post
+                                              args:
+                                                  url: "{CLOUD_FUNCTION_ID}"
+                                                  auth:
+                                                      type: OIDC
+                                                  headers:
+                                                      Content-Type: "application/json"
+                                                  body:
+                                                      call_type: "get_id"
+                                                      workflow_name: "${args.workflow_name}"
+                                                      execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                                      job_name: "{JOB_ID}"
+                                                      function_url_to_call: "{CLOUD_FUNCTION_ID_TO_INVOKE}"
+                                                      query_variables: "${args.query_variables}"
+                                                      workflow_properties: "${args.workflow_properties}"
+                                                      {STEP_PROPERTIES_BLOCK}
+                                              result: async_job_id_{LEVEL_ID}
+                                              next: "{JOB_ID}_Wait"
+                                          - {JOB_ID}_Wait:
+                                              call: "sys.sleep"
+                                              args:
+                                                  seconds: {WAIT_TIME_SECONDS}
+                                              next: "{JOB_ID}_Status"
+                                          - {JOB_ID}_Status:
+                                              call: http.post
+                                              args:
+                                                  url: "{CLOUD_FUNCTION_ID}"
+                                                  auth:
+                                                      type: OIDC
+                                                  headers:
+                                                      Content-Type: "application/json"
+                                                  body:
+                                                      call_type: "get_status"
+                                                      async_job_id: ${async_job_id_{LEVEL_ID}.body}
+                                                      workflow_name: "${args.workflow_name}"
+                                                      execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                                      job_name: "{JOB_ID}"
+                                                      function_url_to_call: "{CLOUD_FUNCTION_STATUS_TO_INVOKE}"
+                                                      query_variables: "${args.query_variables}"
+                                                      workflow_properties: "${args.workflow_properties}"
+                                              result: job_status_{LEVEL_ID}
+                                              next: "{JOB_ID}_EvaluateStatus"
+                                          - {JOB_ID}_EvaluateStatus:
+                                              switch:
+                                                - condition: ${job_status_{LEVEL_ID}.body == "success"}
+                                                  next: "{NEXT_JOB_ID}"
+                                              next: "{JOB_ID}_Wait"

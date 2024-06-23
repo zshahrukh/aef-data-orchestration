@@ -1,0 +1,5 @@
+
+               - Level_{LEVEL_ID}:
+                   parallel:
+                       branches:
+                           <<THREADS>>

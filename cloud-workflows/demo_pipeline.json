@@ -1,0 +1,122 @@
+main:
+  params: [args]
+  steps:
+   - workflow:
+         try:
+             steps:
+                    
+               - Level_1_Thread_1:
+                   steps:
+                       
+                        - sample_jdbc_dataflow_ingestion_Group:
+                           steps:
+                              - sample_jdbc_dataflow_ingestion:
+                                  call: http.post
+                                  args:
+                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      auth:
+                                          type: OIDC
+                                      headers:
+                                          Content-Type: "application/json"
+                                      body:
+                                          call_type: "get_id"
+                                          workflow_name: "${args.workflow_name}"
+                                          execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                          job_name: "sample_jdbc_dataflow_ingestion"
+                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
+                                          query_variables: "${args.query_variables}"
+                                          workflow_properties: "${args.workflow_properties}"
+                                          step_properties: > 
+                                                     {"jobs_definitions_bucket":"analytics-engg-framework-demo_aef_jobs_bucket"}
+                                  result: async_job_id_1
+                                  next: "sample_jdbc_dataflow_ingestion_Wait"
+                              - sample_jdbc_dataflow_ingestion_Wait:
+                                  call: "sys.sleep"
+                                  args:
+                                      seconds: 30
+                                  next: "sample_jdbc_dataflow_ingestion_Status"
+                              - sample_jdbc_dataflow_ingestion_Status:
+                                  call: http.post
+                                  args:
+                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      auth:
+                                          type: OIDC
+                                      headers:
+                                          Content-Type: "application/json"
+                                      body:
+                                          call_type: "get_status"
+                                          async_job_id: ${async_job_id_1.body}
+                                          workflow_name: "${args.workflow_name}"
+                                          execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                          job_name: "sample_jdbc_dataflow_ingestion"
+                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
+                                          query_variables: "${args.query_variables}"
+                                          workflow_properties: "${args.workflow_properties}"
+                                  result: job_status_1
+                                  next: "sample_jdbc_dataflow_ingestion_EvaluateStatus"
+                              - sample_jdbc_dataflow_ingestion_EvaluateStatus:
+                                  switch:
+                                    - condition: ${job_status_1.body == "success"}
+                                      next: "run_dataform_tag"
+                                  next: "sample_jdbc_dataflow_ingestion_Wait"
+
+                        - run_dataform_tag_Group:
+                           steps:
+                              - run_dataform_tag:
+                                  call: http.post
+                                  args:
+                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      auth:
+                                          type: OIDC
+                                      headers:
+                                          Content-Type: "application/json"
+                                      body:
+                                          call_type: "get_id"
+                                          workflow_name: "${args.workflow_name}"
+                                          execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                          job_name: "run_dataform_tag"
+                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
+                                          query_variables: "${args.query_variables}"
+                                          workflow_properties: "${args.workflow_properties}"
+                                          step_properties: > 
+                                                     {"jobs_definitions_bucket":"analytics-engg-framework-demo_aef_jobs_bucket"}
+                                  result: async_job_id_1
+                                  next: "run_dataform_tag_Wait"
+                              - run_dataform_tag_Wait:
+                                  call: "sys.sleep"
+                                  args:
+                                      seconds: 20
+                                  next: "run_dataform_tag_Status"
+                              - run_dataform_tag_Status:
+                                  call: http.post
+                                  args:
+                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      auth:
+                                          type: OIDC
+                                      headers:
+                                          Content-Type: "application/json"
+                                      body:
+                                          call_type: "get_status"
+                                          async_job_id: ${async_job_id_1.body}
+                                          workflow_name: "${args.workflow_name}"
+                                          execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+                                          job_name: "run_dataform_tag"
+                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
+                                          query_variables: "${args.query_variables}"
+                                          workflow_properties: "${args.workflow_properties}"
+                                  result: job_status_1
+                                  next: "run_dataform_tag_EvaluateStatus"
+                              - run_dataform_tag_EvaluateStatus:
+                                  switch:
+                                    - condition: ${job_status_1.body == "success"}
+                                      next: "end"
+                                  next: "run_dataform_tag_Wait"
+         except:
+             as: e
+             steps:
+                 - log:
+                     call: sys.log
+                     args:
+                         data: ${e}
+                 - unhandled_exception:
+                     raise: ${e}

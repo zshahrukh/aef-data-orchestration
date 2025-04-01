@@ -50,6 +50,7 @@ resource "google_workflows_workflow" "workflows" {
   project         = var.project
   call_log_level  = var.workflows_log_level
   source_contents = data.local_file.workflow[each.value].content
+  deletion_protection = false
   depends_on = [data.local_file.workflow]
 }
 
@@ -130,6 +131,11 @@ resource "google_composer_environment" "aef_composer_environment" {
         min_count  = var.composer_config.workloads_config.worker.min_count
         max_count  = var.composer_config.workloads_config.worker.max_count
       }
+      triggerer {
+        cpu        = var.composer_config.workloads_config.worker.cpu
+        memory_gb  = var.composer_config.workloads_config.worker.memory_gb
+        count      = var.composer_config.workloads_config.scheduler.count
+      }
     }
 
     environment_size = var.composer_config.environment_size
@@ -165,7 +171,8 @@ resource "google_composer_environment" "aef_composer_environment" {
     }
   }
   depends_on = [
-    module.composer-service-account
+    module.composer-service-account,
+    google_service_account_iam_member.custom_service_account
   ]
 }
 
@@ -180,7 +187,24 @@ module "composer-service-account" {
       "roles/composer.worker",
       "roles/dataform.admin",
       "roles/dataflow.admin",
-      "roles/iam.serviceAccountUser"
+      "roles/iam.serviceAccountUser",
+      "roles/composer.ServiceAgentV2Ext",
+      "roles/iam.serviceAccountTokenCreator",
+      "roles/dataproc.admin"
+    ]
+  }
+}
+
+module "dataproc-service-account" {
+  count    = var.create_composer_environment == true ? 1 : 0
+  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/iam-service-account"
+  project_id = var.project
+  name       = "aef-dataproc${var.environment}-sa"
+  iam_project_roles = {
+    "${var.project}" = [
+      "roles/bigquery.jobUser",
+      "roles/dataproc.worker",
+      "roles/dataproc.admin"
     ]
   }
 }

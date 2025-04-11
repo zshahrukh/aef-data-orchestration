@@ -204,7 +204,8 @@ module "dataproc-service-account" {
     "${var.project}" = [
       "roles/bigquery.jobUser",
       "roles/dataproc.worker",
-      "roles/dataproc.admin"
+      "roles/dataproc.admin",
+      "roles/compute.osLogin"
     ]
   }
 }

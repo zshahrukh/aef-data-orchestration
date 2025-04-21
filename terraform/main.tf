@@ -96,6 +96,22 @@ resource "google_storage_bucket_object" "uploaded_artifacts_external_composer" {
   depends_on = [null_resource.deploy_composer_dags]
 }
 
+module "vpc" {
+  source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/net-vpc"
+  project_id = var.project
+  name       = "aef-composer-vpc"
+  psa_configs = [{
+    ranges = { cloud-sql = "10.60.0.0/16" }
+  }]
+  subnets = [
+    {
+      name          = "aef-composer-${var.region}"
+      region        = var.region
+      ip_cidr_range = "10.0.0.0/24"
+    }
+  ]
+}
+
 resource "google_composer_environment" "aef_composer_environment" {
   count    = var.create_composer_environment == true ? 1 : 0
   provider = google-beta
@@ -141,8 +157,8 @@ resource "google_composer_environment" "aef_composer_environment" {
     environment_size = var.composer_config.environment_size
 
     node_config {
-      network              = var.composer_config.vpc
-      subnetwork           = var.composer_config.subnet
+      network              = module.vpc.name
+      subnetwork           = module.vpc.subnets[0].name
       service_account      = module.composer-service-account[0].email
       enable_ip_masq_agent = true
       tags                 = ["composer-worker"]
@@ -150,8 +166,8 @@ resource "google_composer_environment" "aef_composer_environment" {
     }
     private_environment_config {
       enable_private_endpoint              = "true"
-      cloud_sql_ipv4_cidr_block            = var.composer_config.cloud_sql
-      master_ipv4_cidr_block               = var.composer_config.gke_master
+      cloud_sql_ipv4_cidr_block            = "10.0.10.0/24"
+      master_ipv4_cidr_block               = "10.0.11.0/28"
       cloud_composer_connection_subnetwork = var.composer_config.connection_subnetwork
     }
     dynamic "encryption_config" {

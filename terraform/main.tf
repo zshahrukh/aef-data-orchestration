@@ -105,6 +105,11 @@ module "vpc" {
       name          = "psoaef-composer-${var.region}"
       region        = var.region
       ip_cidr_range = "172.20.0.0/16"
+      secondary_ip_ranges = {
+        # Range for composer GKE Pods
+        pods = "172.21.0.0/17"
+        services = "172.21.128.0/20"
+      }
     }
   ]
   peering_config = {
@@ -163,6 +168,10 @@ resource "google_composer_environment" "aef_composer_environment" {
       service_account      = module.composer-service-account[0].email
       enable_ip_masq_agent = true
       tags                 = ["composer-worker"]
+      ip_allocation_policy {
+        cluster_secondary_range_name  = "pods"
+        services_secondary_range_name = "services"
+      }
 
     }
     private_environment_config {

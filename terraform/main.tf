@@ -99,17 +99,18 @@ resource "google_storage_bucket_object" "uploaded_artifacts_external_composer" {
 module "vpc" {
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/net-vpc"
   project_id = var.project
-  name       = "aef-composer-vpc"
-  psa_configs = [{
-    ranges = { cloud-sql = "10.60.0.0/16" }
-  }]
+  name       = "psoaef-composer-vpc"
   subnets = [
     {
-      name          = "aef-composer-${var.region}"
+      name          = "psoaef-composer-${var.region}"
       region        = var.region
-      ip_cidr_range = "10.0.0.0/24"
+      ip_cidr_range = "172.20.0.0/16"
     }
   ]
+  peering_config = {
+    peer_vpc_self_link = var.sample_vpc_self_link
+    import_routes      = true
+  }
 }
 
 resource "google_composer_environment" "aef_composer_environment" {
@@ -158,7 +159,7 @@ resource "google_composer_environment" "aef_composer_environment" {
 
     node_config {
       network              = module.vpc.name
-      subnetwork           = module.vpc.subnets[0].name
+      subnetwork           = module.vpc.subnets["${var.region}/psoaef-composer-${var.region}"].name
       service_account      = module.composer-service-account[0].email
       enable_ip_masq_agent = true
       tags                 = ["composer-worker"]

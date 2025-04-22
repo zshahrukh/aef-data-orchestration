@@ -66,6 +66,19 @@ variable "composer_bucket_name" {
   default     = null
 }
 
+variable "enable_peering_to_sample_vpc" {
+  description = "Set to true to attempt creation of a VPC peering connection to sample-vpc."
+  type        = bool
+  default     = false
+}
+
+variable "sample_vpc_self_link" {
+  description = "The self_link of the sample-vpc network to peer with. Required if enable_peering_to_sample_vpc is true."
+  type        = string
+  default     = null
+  # Example: "https://www.googleapis.com/compute/v1/projects/OTHER_TEAM_PROJECT_ID/global/networks/sample-vpc"
+}
+
 variable "composer_config" {
   description = "Cloud Composer config."
   type        = object({

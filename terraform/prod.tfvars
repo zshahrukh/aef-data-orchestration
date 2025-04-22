@@ -41,3 +41,7 @@ composer_config             = {
     }
   }
 }
+
+# do not set in prod deployment, only needed for demo
+enable_peering_to_sample_vpc = true
+sample_vpc_self_link = "https://www.googleapis.com/compute/v1/projects/<PROJECT_ID>/global/networks/sample-vpc"

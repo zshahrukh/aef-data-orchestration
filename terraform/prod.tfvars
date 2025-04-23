@@ -1,5 +1,5 @@
 project = "<PROJECT_ID>"
-region  = "us-central1"
+region  = "us-central2"
 
 data_transformation_project = "<PROJECT_ID>"
 environment                 = "dev"

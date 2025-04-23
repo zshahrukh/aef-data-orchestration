@@ -17,7 +17,7 @@ main:
                                           - sample_serverless_spark_mainframe_ingestion:
                                               call: http.post
                                               args:
-                                                  url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                                  url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                                   auth:
                                                       type: OIDC
                                                   headers:
@@ -27,7 +27,7 @@ main:
                                                       workflow_name: "${args.workflow_name}"
                                                       execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                                       job_name: "sample_serverless_spark_mainframe_ingestion"
-                                                      function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataproc-serverless-job-executor"
+                                                      function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataproc-serverless-job-executor"
                                                       query_variables: "${args.query_variables}"
                                                       workflow_properties: "${args.workflow_properties}"
                                                       step_properties: > 
@@ -42,7 +42,7 @@ main:
                                           - sample_serverless_spark_mainframe_ingestion_Status:
                                               call: http.post
                                               args:
-                                                  url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                                  url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                                   auth:
                                                       type: OIDC
                                                   headers:
@@ -53,7 +53,7 @@ main:
                                                       workflow_name: "${args.workflow_name}"
                                                       execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                                       job_name: "sample_serverless_spark_mainframe_ingestion"
-                                                      function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataproc-serverless-job-executor"
+                                                      function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataproc-serverless-job-executor"
                                                       query_variables: "${args.query_variables}"
                                                       workflow_properties: "${args.workflow_properties}"
                                                       step_properties: > 
@@ -74,7 +74,7 @@ main:
                                           - sample_jdbc_dataflow_ingestion:
                                               call: http.post
                                               args:
-                                                  url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                                  url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                                   auth:
                                                       type: OIDC
                                                   headers:
@@ -84,7 +84,7 @@ main:
                                                       workflow_name: "${args.workflow_name}"
                                                       execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                                       job_name: "sample_jdbc_dataflow_ingestion"
-                                                      function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
+                                                      function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
                                                       query_variables: "${args.query_variables}"
                                                       workflow_properties: "${args.workflow_properties}"
                                                       step_properties: > 
@@ -99,7 +99,7 @@ main:
                                           - sample_jdbc_dataflow_ingestion_Status:
                                               call: http.post
                                               args:
-                                                  url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                                  url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                                   auth:
                                                       type: OIDC
                                                   headers:
@@ -110,7 +110,7 @@ main:
                                                       workflow_name: "${args.workflow_name}"
                                                       execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                                       job_name: "sample_jdbc_dataflow_ingestion"
-                                                      function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
+                                                      function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataflow-flextemplate-job-executor"
                                                       query_variables: "${args.query_variables}"
                                                       workflow_properties: "${args.workflow_properties}"
                                                       step_properties: > 
@@ -131,7 +131,7 @@ main:
                               - run_dataform_tag:
                                   call: http.post
                                   args:
-                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                       auth:
                                           type: OIDC
                                       headers:
@@ -141,7 +141,7 @@ main:
                                           workflow_name: "${args.workflow_name}"
                                           execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                           job_name: "run_dataform_tag"
-                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
+                                          function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
                                           query_variables: "${args.query_variables}"
                                           workflow_properties: "${args.workflow_properties}"
                                           step_properties: > 
@@ -156,7 +156,7 @@ main:
                               - run_dataform_tag_Status:
                                   call: http.post
                                   args:
-                                      url: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
+                                      url: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/orch-framework-intermediate"
                                       auth:
                                           type: OIDC
                                       headers:
@@ -167,7 +167,7 @@ main:
                                           workflow_name: "${args.workflow_name}"
                                           execution_id: ${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
                                           job_name: "run_dataform_tag"
-                                          function_url_to_call: "https://us-central1-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
+                                          function_url_to_call: "https://us-central2-analytics-engg-framework-demo.cloudfunctions.net/dataform-tag-executor"
                                           query_variables: "${args.query_variables}"
                                           workflow_properties: "${args.workflow_properties}"
                                           step_properties: > 

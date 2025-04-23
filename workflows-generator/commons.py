@@ -101,7 +101,7 @@ def assemble_cloud_function_id(name, exec_config):
     Function to assemble cloud function ID
     :param name: name of the Cloud function
     :return: if of the cloud function
-    ej: "https://us-central2-dp-111-orc.cloudfunctions.net/async-function"
+    ej: "https://us-central1-dp-111-orc.cloudfunctions.net/async-function"
     """
     project_id = exec_config.get("pProjectID")
     region = exec_config.get("pRegion")

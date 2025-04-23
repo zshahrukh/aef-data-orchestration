@@ -198,7 +198,7 @@ resource "google_composer_environment" "aef_composer_environment" {
   }
   depends_on = [
     module.composer-service-account,
-    google_service_account_iam_member.custom_service_account
+    google_service_account_iam_member.custom_service_account,
     module.vpc
   ]
 }

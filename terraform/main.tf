@@ -163,8 +163,8 @@ resource "google_composer_environment" "aef_composer_environment" {
     environment_size = var.composer_config.environment_size
 
     node_config {
-      network              = module.vpc.name
-      subnetwork           = module.vpc.subnets["${var.region}/psoaef-composer-${var.region}"].name
+      network              = module.vpc.self_link
+      subnetwork           = module.vpc.subnets["${var.region}/psoaef-composer-${var.region}"].id
       service_account      = module.composer-service-account[0].email
       enable_ip_masq_agent = true
       tags                 = ["composer-worker"]
